@@ -1,0 +1,64 @@
+{
+    
+    "containerDefinitions": [
+        {
+            "name": "resume-app-container",
+            "image": "211125480694.dkr.ecr.eu-north-1.amazonaws.com/resume-app-repo:latest",
+            "cpu": 0,
+            "portMappings": [
+                {
+                    "name": "resume-app-container-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                }
+            ],
+            "essential": true,
+            "environment": [],
+            "environmentFiles": [],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "ulimits": [],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/resume-app-taskdefinition",
+                    "mode": "non-blocking",
+                    "awslogs-create-group": "true",
+                    "max-buffer-size": "25m",
+                    "awslogs-region": "eu-north-1",
+                    "awslogs-stream-prefix": "ecs"
+                },
+                "secretOptions": []
+            },
+            "systemControls": []
+        }
+    ],
+    "family": "resume-app-taskdefinition",
+    "taskRoleArn": "arn:aws:iam::211125480694:role/ECS_role",
+    "executionRoleArn": "arn:aws:iam::211125480694:role/ECS_role",
+    "networkMode": "awsvpc",
+    "revision": 1,
+    "volumes": [],
+    "status": "ACTIVE",
+   
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
+    ],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "3072",
+    "runtimePlatform": {
+        "cpuArchitecture": "X86_64",
+        "operatingSystemFamily": "LINUX"
+    },
+    "registeredAt": "2025-06-15T14:00:06.277Z",
+    
+    "enableFaultInjection": false,
+    "tags": []
+}
