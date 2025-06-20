@@ -1,3 +1,34 @@
+🚀 ECS EC2 Deployment with GitHub Actions (for a Dockerized HTML site)
+
+📁 Project Structure
+my-html-site/
+├── index.html
+├── about.html
+├── styles/
+│   └── style.css
+├── Dockerfile
+├── .dockerignore
+└── .github/
+    └── workflows/
+        └── deploy.yml
+🔐 1. Create GitHub Secrets
+Go to GitHub > Settings > Secrets > Actions, then add:
+
+Secret Name	Description
+AWS_ACCESS_KEY_ID	From your IAM user
+AWS_SECRET_ACCESS_KEY	IAM secret
+AWS_REGION	e.g. us-east-1
+ECR_REPO	e.g. my-resume-app
+ECS_CLUSTER	e.g. resume-cluster
+ECS_SERVICE	e.g. resume-service
+ECS_TASK_DEFINITION	Name of your task family (e.g. resume-task)
+🧱 2. Dockerfile
+FROM nginx:alpine
+RUN rm -rf /usr/share/nginx/html/*
+COPY . /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+⚙️ 3. GitHub Actions Workflow (.github/workflows/deploy.yml)
 name: Deploy to ECS EC2
 
 on:
