@@ -7,11 +7,51 @@ my-html-site/
 ├── styles/
 │   └── style.css
 ├── Dockerfile
-├── .dockerignore
 └── .github/
     └── workflows/
-        └── deploy.yml
-🔐 1. Create GitHub Secrets
+        └── ecs_deploy.yml
+
+
+
+1. Create an ECR Repository
+In AWS Console:
+
+Go to ECR
+Create repository, e.g., resume-site-repo
+Note the URI: 123456789012.dkr.ecr.<region>.amazonaws.com/resume-site-repo
+
+2. Set Up ECS Cluster (EC2)
+Go to ECS > Clusters
+Create an EC2-based cluster
+Launch 1 EC2 instance (e.g., t3.medium)
+Ensure the instance:
+Uses the ECS-optimized AMI
+Has port 80 open in its Security Group
+
+3. Create Task Definition (ECS)
+Go to ECS > Task Definitions:
+
+Launch type: EC2
+Network Mode: bridge
+Container:
+Name: resume-container
+Image: <your ECR URI>:latest
+Port mappings:
+containerPort: 80
+hostPort: 80 ✅ (So public traffic works without random port)
+Logging: AWS Logs
+Save it (e.g., resume-site-task)
+
+4. Create ECS Service
+Go to ECS > Services:
+
+Launch type: EC2
+Cluster: your EC2 cluster
+Task definition: use the one above
+Desired tasks: 1
+Launch service
+
+5. Create GitHub Secrets
 Go to GitHub > Settings > Secrets > Actions, then add:
 
 Secret Name	Description
@@ -22,13 +62,13 @@ ECR_REPO	e.g. my-resume-app
 ECS_CLUSTER	e.g. resume-cluster
 ECS_SERVICE	e.g. resume-service
 ECS_TASK_DEFINITION	Name of your task family (e.g. resume-task)
-🧱 2. Dockerfile
+
+6. Dockerfile
 FROM nginx:alpine
-RUN rm -rf /usr/share/nginx/html/*
 COPY . /usr/share/nginx/html
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-⚙️ 3. GitHub Actions Workflow (.github/workflows/deploy.yml)
+
+7. GitHub Actions Workflow (.github/workflows/ecs_deploy.yml)
 name: Deploy to ECS EC2
 
 on:
@@ -92,3 +132,9 @@ jobs:
             --cluster $CLUSTER_NAME \
             --service $SERVICE_NAME \
             --task-definition $REVISION
+
+8. Access Your Site
+
+Once deployed, access your site at:
+
+http://<your-ec2-public-ip>
