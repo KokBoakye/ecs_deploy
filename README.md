@@ -1,7 +1,7 @@
 🚀 ECS EC2 Deployment with GitHub Actions (for a Dockerized HTML site)
 
 📁 Project Structure
-my-html-site/
+my-html-site_ecs/
 ├── index.html
 ├── about.html
 ├── styles/
